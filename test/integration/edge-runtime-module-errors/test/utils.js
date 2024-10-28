@@ -55,10 +55,12 @@ export function expectUnsupportedModuleDevError(
   output = context.logs.output
 ) {
   expectUnsupportedModuleProdError(moduleName, output)
-  // turbopack have correct error overly, but doesn't emit those into cli
-  if (!process.env.TURBOPACK) {
-    expect(stripAnsi(output)).toContain(importStatement)
-  }
+  // TODO(veil): codeframe should point to module call
+  // We previously asserted that the importStatement appears
+  // in the codeframe but that's just a coincidence depending on how far
+  // away the import statement is from the callsite.
+  // We should instead assert on the sourceframe once errors in edge runtime are
+  // sourcemapped
 
   const moduleNotSupportedMessage = getUnsupportedModule(moduleName)
   expect(responseText).toContain(escapeLF(moduleNotSupportedMessage))

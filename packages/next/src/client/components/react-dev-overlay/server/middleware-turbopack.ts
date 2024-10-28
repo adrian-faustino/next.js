@@ -83,7 +83,7 @@ function createStackFrame(searchParams: URLSearchParams) {
   } satisfies TurbopackStackFrame
 }
 
-export async function createOriginalStackFrame(
+async function createOriginalStackFrame(
   project: Project,
   frame: TurbopackStackFrame
 ): Promise<OriginalStackFrameResponse | null> {

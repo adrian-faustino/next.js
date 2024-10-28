@@ -210,12 +210,12 @@ function parseAndSourceMap(error: Error): string {
   )
 }
 
-export function patchErrorInspect() {
-  Error.prepareStackTrace = prepareUnsourcemappedStackTrace
+export function patchErrorInspect(errorClass: ErrorConstructor): void {
+  errorClass.prepareStackTrace = prepareUnsourcemappedStackTrace
 
   // @ts-expect-error -- TODO upstream types
   // eslint-disable-next-line no-extend-native -- We're not extending but overriding.
-  Error.prototype[inspectSymbol] = function (
+  errorClass.prototype[inspectSymbol] = function (
     depth: number,
     inspectOptions: util.InspectOptions,
     inspect: typeof util.inspect
@@ -227,8 +227,8 @@ export function patchErrorInspect() {
       const newError =
         this.cause !== undefined
           ? // Setting an undefined `cause` would print `[cause]: undefined`
-            new Error(this.message, { cause: this.cause })
-          : new Error(this.message)
+            new errorClass(this.message, { cause: this.cause })
+          : new errorClass(this.message)
 
       // TODO: Ensure `class MyError extends Error {}` prints `MyError` as the name
       newError.stack = parseAndSourceMap(this)

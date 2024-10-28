@@ -1,3 +1,3 @@
 import { patchErrorInspect } from '../patch-error-inspect'
 
-patchErrorInspect()
+patchErrorInspect(globalThis.Error)
