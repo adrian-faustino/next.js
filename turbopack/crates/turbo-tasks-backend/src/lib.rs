@@ -51,8 +51,8 @@ pub fn rocksdb_backing_storage(path: &Path) -> Result<RocksDBBackingStorage> {
 
 pub type NoopBackingStorage = KeyValueDatabaseBackingStorage<NoopKvDb>;
 
-pub fn noop_backing_storage(_path: &Path) -> Result<NoopBackingStorage> {
-    Ok(KeyValueDatabaseBackingStorage::new(NoopKvDb))
+pub fn noop_backing_storage() -> NoopBackingStorage {
+    KeyValueDatabaseBackingStorage::new(NoopKvDb)
 }
 
 #[cfg(feature = "rocksdb")]
