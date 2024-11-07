@@ -8497,6 +8497,7 @@ dependencies = [
  "async-trait",
  "auto-hash-map",
  "byteorder",
+ "criterion",
  "dashmap 6.1.0",
  "either",
  "hashbrown 0.14.5",
