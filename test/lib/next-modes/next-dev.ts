@@ -150,6 +150,17 @@ export class NextDevInstance extends NextInstance {
     }
   }
 
+  public override async patchFile(
+    filename: string,
+    content: string | ((content: string) => string),
+    runWithTempContent?: (context: { newFile: boolean }) => Promise<void>
+  ) {
+    await this.handleDevWatchDelayBeforeChange(filename)
+    const value = await super.patchFile(filename, content, runWithTempContent)
+    await this.handleDevWatchDelayAfterChange(filename)
+    return value
+  }
+
   public override async renameFile(filename: string, newFilename: string) {
     await this.handleDevWatchDelayBeforeChange(filename)
     await super.renameFile(filename, newFilename)
