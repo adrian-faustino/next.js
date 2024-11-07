@@ -364,7 +364,8 @@ describe('server-side dev errors', () => {
         "
       `)
     } else {
-      expect(stderrOutput).toMatchInlineSnapshot(`
+      // sometimes there is a leading newline, so trim it
+      expect(stderrOutput.trimStart()).toMatchInlineSnapshot(`
         "Error: catch this rejection
             at Timeout.eval [as _onTimeout] (../../test/integration/server-side-dev-errors/pages/uncaught-rejection.js:7:19)
            5 | export async function getServerSideProps() {

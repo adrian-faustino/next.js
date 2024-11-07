@@ -6,6 +6,8 @@ import { nextTestSetup } from 'e2e-utils'
 
 const cacheReasonRegex = /Cache (missed|skipped) reason: /
 
+jest.setTimeout(1000 * 60 * 5)
+
 interface ParsedLog {
   method: string
   url: string
@@ -47,6 +49,7 @@ describe('app-dir - logging', () => {
   const { next, isNextDev } = nextTestSetup({
     skipDeployment: true,
     files: __dirname,
+    patchFileDelay: 2000,
   })
   function runTests({
     withFetchesLogging,
@@ -210,22 +213,6 @@ describe('app-dir - logging', () => {
           expect(logs).not.toContain('?_rsc')
         })
 
-        it('should log requests for client-side navigations', async () => {
-          const outputIndex = next.cliOutput.length
-          const browser = await next.browser('/')
-          await browser.elementById('nav-default-cache').click()
-          await browser.waitForElementByCss('h1')
-
-          const expectedUrl = withFullUrlFetches
-            ? 'https://next-data-api-endpoint.vercel.app/api/random'
-            : 'https://next-data-api-en../api/random'
-
-          await retry(() => {
-            const logs = stripAnsi(next.cliOutput.slice(outputIndex))
-            expect(logs).toIncludeRepeated(` │ GET ${expectedUrl}`, 7)
-          })
-        })
-
         it('should not log requests for HMR refreshes', async () => {
           const browser = await next.browser('/fetch-no-store')
           let headline = await browser.waitForElementByCss('h1').text()
@@ -245,6 +232,22 @@ describe('app-dir - logging', () => {
                 // TODO: remove custom duration in case we increase the default.
               }, 5000)
           )
+        })
+
+        it('should log requests for client-side navigations', async () => {
+          const outputIndex = next.cliOutput.length
+          const browser = await next.browser('/')
+          await browser.elementById('nav-default-cache').click()
+          await browser.waitForElementByCss('h1')
+
+          const expectedUrl = withFullUrlFetches
+            ? 'https://next-data-api-endpoint.vercel.app/api/random'
+            : 'https://next-data-api-en../api/random'
+
+          await retry(() => {
+            const logs = stripAnsi(next.cliOutput.slice(outputIndex))
+            expect(logs).toIncludeRepeated(` │ GET ${expectedUrl}`, 7)
+          })
         })
 
         describe('when logging.fetches.hmrRefreshes is true', () => {

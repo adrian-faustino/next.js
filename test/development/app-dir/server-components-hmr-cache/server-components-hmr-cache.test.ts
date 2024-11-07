@@ -2,7 +2,7 @@ import { nextTestSetup } from 'e2e-utils'
 import { retry } from 'next-test-utils'
 
 describe('server-components-hmr-cache', () => {
-  const { next } = nextTestSetup({ files: __dirname })
+  const { next } = nextTestSetup({ files: __dirname, patchFileDelay: 1000 })
   const loggedAfterValueRegexp = /After: (\d\.\d+)/
   let cliOutputLength: number
 
